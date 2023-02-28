@@ -69,6 +69,12 @@ def take_turn(num_rolls, opponent_score, dice=six_sided):
     assert opponent_score < 100, 'The game should be over.'
     # BEGIN PROBLEM 3
     "*** YOUR CODE HERE ***"
+
+    if num_rolls == 0:
+        return free_bacon(opponent_score)
+    else:
+        return roll_dice(num_rolls, dice)
+
     # END PROBLEM 3
 
 
@@ -78,6 +84,25 @@ def is_swap(player_score, opponent_score):
     """
     # BEGIN PROBLEM 4
     "*** YOUR CODE HERE ***"
+
+    def abs(a):
+        if a >= 0:
+            return a
+        else:
+            return -a
+
+    def tensDigit(a):
+        if a < 100:
+            return a // 10
+        a_str = str(a)
+        return int(str(a_str[len(a_str) - 2]))
+
+    if abs(player_score % 10 - opponent_score % 10) == tensDigit(opponent_score):
+        return True
+    else:
+        return False
+
+
     # END PROBLEM 4
 
 
@@ -115,15 +140,105 @@ def play(strategy0, strategy1, score0=0, score1=0, dice=six_sided,
     say:        The commentary function to call at the end of the first turn.
     feral_hogs: A boolean indicating whether the feral hogs rule should be active.
     """
+
     who = 0  # Who is about to take a turn, 0 (first) or 1 (second)
+
     # BEGIN PROBLEM 5
     "*** YOUR CODE HERE ***"
+
+    Lround0 = 0
+    Lround1 = 0
+
+
+    def finish(a, b):
+        if a < goal and b < goal:
+            return False
+        else:
+            return True
+
+    def swap(a, b):
+        temp = a
+        a = b
+        b = temp
+        return a, b
+
+    def process(strat, player_score, opponent_score, Lscore):
+        roll_time = strat(player_score, opponent_score)
+        current_score = take_turn(roll_time, opponent_score, dice)
+        player_score += current_score
+
+        if feral_hogs:
+            if abs(roll_time - Lscore) == 2:
+                player_score += 3
+            Lscore = current_score
+
+        if is_swap(player_score, opponent_score):
+            player_score, opponent_score = swap(player_score, opponent_score)
+
+        return player_score, opponent_score, Lscore
+
+    while finish(score0, score1) == False:
+        if who == 0:
+            score0, score1, Lround0 = process(strategy0, score0, score1, Lround0)
+        else:
+            score1, score0, Lround1 = process(strategy1, score1, score0, Lround1)
+
+        who = other(who)
+
+    return score0, score1
+
+    # while finish(score0, score1) == False:
+    #     print('DEBUG:', score0, score1)
+    #
+    #     if feral_hogs == False:
+    #         if who == 0:
+    #             score0 += take_turn(strategy0(score0, score1), score1, dice)
+    #             if is_swap(score0, score1):
+    #                 score0, score1 = swap(score0, score1)
+    #             who = other(who)
+    #
+    #         if finish(score0, score1) == True:
+    #             break
+    #
+    #         if who == 1:
+    #             score1 += take_turn(strategy1(score1, score0), score0, dice)
+    #             if is_swap(score1, score0):
+    #                 score1, score0 = swap(score1, score0)
+    #             who = other(who)
+    #
+    #     if feral_hogs == True:
+    #         if who == 0:
+    #             if abs(take_turn(strategy0(score0, score1), score1, dice) - Lround0) == 3:
+    #                 Lround0 = take_turn(strategy0(score0, score1), score1, dice)
+    #                 score0 += take_turn(strategy0(score0, score1), score1, dice) + 3
+    #             else:
+    #                 Lround0 = take_turn(strategy0(score0, score1), score1, dice)
+    #                 score0 += take_turn(strategy0(score0, score1), score1, dice)
+    #             if is_swap(score0, score1):
+    #                 score0, score1 = swap(score0, score1)
+    #             who = other(who)
+    #
+    #         if finish(score0, score1) == True:
+    #             break
+    #
+    #         if who == 1:
+    #             if abs(take_turn(strategy1(score1, score0), score0, dice) - Lround1) == 3:
+    #                 Lround1 = take_turn(strategy1(score1, score0), score0, dice)
+    #                 score1 += take_turn(strategy1(score1, score0), score0, dice) + 3
+    #             else:
+    #                 Lround1 = take_turn(strategy1(score1, score0), score0, dice)
+    #                 score1 += take_turn(strategy1(score1, score0), score0, dice)
+    #             if is_swap(score1, score0):
+    #                 score1, score0 = swap(score1, score0)
+    #             who = other(who)
+
+
+
     # END PROBLEM 5
     # (note that the indentation for the problem 6 prompt (***YOUR CODE HERE***) might be misleading)
     # BEGIN PROBLEM 6
     "*** YOUR CODE HERE ***"
     # END PROBLEM 6
-    return score0, score1
 
 
 #######################

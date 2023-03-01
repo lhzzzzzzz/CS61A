@@ -339,7 +339,6 @@ def announce_highest(who, last_score=0, running_high=0):
             running = now
             print(running, "point(s)! That's the biggest gain yet for Player", who)
 
-
         return announce_highest(who, last, running)
 
     return two_score
@@ -383,6 +382,28 @@ def make_averaged(original_function, trials_count=1000):
     """
     # BEGIN PROBLEM 8
     "*** YOUR CODE HERE ***"
+
+    sum = 0
+    def f(*args, sum=sum, trials_count=trials_count):
+        times = trials_count
+        while trials_count:
+            sum += original_function(*args)
+            trials_count -= 1
+        return sum / times
+
+    return f
+
+    # sum = 0
+    # def avrage(*args, sum = sum, trials_count = trials_count):
+    #     times = trials_count
+    #     while trials_count:
+    #         sum += original_function(*args)
+    #         trials_count -= 1
+    #         return sum / times
+    # return avrage
+
+
+
     # END PROBLEM 8
 
 

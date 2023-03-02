@@ -102,6 +102,7 @@ def product_using_accumulate(n, term):
     True
     """
     "*** YOUR CODE HERE ***"
+    return accumulate(mul, 1, n, term)
 
 
 def compose1(func1, func2):
@@ -125,7 +126,14 @@ def make_repeater(func, n):
     5
     """
     "*** YOUR CODE HERE ***"
-
+    result = func
+    if n == 0:
+        return lambda x: x
+    cic = 1
+    while cic < n:
+        result = compose1(result, func)
+        cic += 1
+    return result
 
 def zero(f):
     return lambda x: x
